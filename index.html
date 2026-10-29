@@ -1,0 +1,681 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bad 3D — bathroom planner · demo by Andrii Lynnyk</title>
+    <meta
+      name="description"
+      content="Bad 3D: a 3D bathroom planner in the browser — photos to a renovated 3D bathroom with AI, parametric fixtures, real tile sizes. Designed and coded by Andrii Lynnyk."
+    />
+    <meta name="author" content="Andrii Lynnyk" />
+    <meta name="theme-color" content="#1f2a2e" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <link
+      rel="canonical"
+      href="https://andrey-tut.github.io/bathroom-planner/"
+    />
+    <meta
+      property="og:title"
+      content="Bad 3D — bathroom planner · demo by Andrii Lynnyk"
+    />
+    <meta
+      property="og:description"
+      content="Photos → renovated 3D bathroom with AI. Own parametric 3D models, real tile sizes, 2D/3D/eye-level. Designed and coded by Andrii Lynnyk."
+    />
+    <meta
+      property="og:image"
+      content="https://andrey-tut.github.io/bathroom-planner/docs/shots/og.jpg"
+    />
+    <meta property="og:type" content="website" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Bad 3D — bathroom planner",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "Web",
+        "url": "https://andrey-tut.github.io/bathroom-planner/",
+        "dateCreated": "2026-10-27",
+        "author": {
+          "@type": "Person",
+          "name": "Andrii Lynnyk",
+          "url": "https://andrii.dk/",
+          "sameAs": ["https://github.com/andrey-tut"]
+        },
+        "copyrightHolder": { "@type": "Person", "name": "Andrii Lynnyk" },
+        "copyrightYear": 2026
+      }
+    </script>
+    <style>
+      :root {
+        --ink: #1f2a2e;
+        --mute: #5d6a6e;
+        --bg: #f6f4ef;
+        --card: #fff;
+        --line: #e3dfd6;
+        --acc: #2f6f68;
+        --acc2: #e9efe9;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font:
+          16px/1.55 -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Inter,
+          Roboto,
+          Arial,
+          sans-serif;
+      }
+      a {
+        color: inherit;
+      }
+      .wrap {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+      header.top {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 0;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 800;
+        font-size: 19px;
+        text-decoration: none;
+      }
+      .logo img {
+        width: 32px;
+        height: 32px;
+      }
+      .langs {
+        margin-left: auto;
+        display: flex;
+        gap: 4px;
+      }
+      .langs button {
+        font: inherit;
+        font-size: 13px;
+        border: 1px solid var(--line);
+        background: var(--card);
+        border-radius: 999px;
+        padding: 4px 10px;
+        cursor: pointer;
+        color: var(--mute);
+      }
+      .langs button[aria-pressed="true"] {
+        background: var(--ink);
+        color: #fff;
+        border-color: var(--ink);
+      }
+      .hero {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: 40px;
+        align-items: center;
+        padding: 28px 0 48px;
+      }
+      .kicker {
+        display: inline-block;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--acc);
+        background: var(--acc2);
+        border-radius: 999px;
+        padding: 3px 10px;
+        margin-bottom: 14px;
+      }
+      h1 {
+        font-size: clamp(32px, 4.4vw, 52px);
+        line-height: 1.05;
+        margin: 0 0 16px;
+        letter-spacing: -0.02em;
+      }
+      .lead {
+        font-size: 18px;
+        color: var(--mute);
+        margin: 0 0 22px;
+        max-width: 34em;
+      }
+      .cta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 700;
+        text-decoration: none;
+        border-radius: 999px;
+        padding: 12px 20px;
+        border: 1.5px solid var(--ink);
+      }
+      .btn.primary {
+        background: var(--acc);
+        border-color: var(--acc);
+        color: #fff;
+      }
+      .btn:hover {
+        filter: brightness(1.08);
+      }
+      .shot {
+        border-radius: 14px;
+        overflow: hidden;
+        border: 1px solid var(--line);
+        box-shadow: 0 20px 50px -24px rgba(31, 42, 46, 0.35);
+        background: #fff;
+      }
+      .shot img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+      .author {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 18px;
+        align-items: start;
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        padding: 22px 24px;
+        margin: 0 0 48px;
+      }
+      .author .badge {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        background: var(--ink);
+        color: #fff;
+        display: grid;
+        place-items: center;
+        font-weight: 800;
+        font-size: 18px;
+      }
+      .author h2 {
+        margin: 0 0 6px;
+        font-size: 20px;
+      }
+      .author p {
+        margin: 0;
+        color: var(--mute);
+      }
+      .author p + p {
+        margin-top: 8px;
+      }
+      section h2.sec {
+        font-size: 26px;
+        margin: 0 0 18px;
+        letter-spacing: -0.01em;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        margin-bottom: 48px;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 18px;
+      }
+      .card h3 {
+        margin: 0 0 6px;
+        font-size: 16px;
+      }
+      .card p {
+        margin: 0;
+        color: var(--mute);
+        font-size: 15px;
+      }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 48px;
+      }
+      .gallery figure {
+        margin: 0;
+        min-width: 0;
+      }
+      .gallery img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+      }
+      .gallery figcaption {
+        font-size: 13px;
+        color: var(--mute);
+        padding: 6px 2px 0;
+      }
+      .mobile-pair {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 14px;
+        align-items: start;
+      }
+      .facts {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-bottom: 48px;
+      }
+      .fact {
+        border-top: 2px solid var(--ink);
+        padding-top: 10px;
+      }
+      .fact b {
+        display: block;
+        font-size: 28px;
+        letter-spacing: -0.02em;
+      }
+      .fact span {
+        color: var(--mute);
+        font-size: 14px;
+      }
+      footer {
+        border-top: 1px solid var(--line);
+        padding: 22px 0 40px;
+        color: var(--mute);
+        font-size: 14px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 18px;
+      }
+      @media (max-width: 860px) {
+        .hero {
+          grid-template-columns: 1fr;
+          gap: 24px;
+          padding-top: 12px;
+        }
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+        .facts {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+      @media (max-width: 560px) {
+        .grid,
+        .gallery {
+          grid-template-columns: 1fr;
+        }
+        .mobile-pair {
+          grid-template-columns: 1fr;
+        }
+        .author {
+          grid-template-columns: 1fr;
+        }
+        .lead {
+          font-size: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="top">
+        <a class="logo" href="./"
+          ><img src="icons/icon.svg" alt="" width="32" height="32" />Bad
+          3D</a
+        >
+        <div class="langs" role="group" aria-label="Language">
+          <button type="button" data-l="en">EN</button
+          ><button type="button" data-l="da">DA</button
+          ><button type="button" data-l="uk">UK</button>
+        </div>
+      </header>
+
+      <section class="hero">
+        <div>
+          <span class="kicker" data-i="kicker">Demo · my own product</span>
+          <h1 data-i="h1">
+            Plan a new bathroom in 3D — from a few phone photos
+          </h1>
+          <p class="lead" data-i="lead">
+            Take photos of the old bathroom; AI reads the layout, proportions
+            and where water and drains are, and the planner builds the renovated
+            room in 3D. Then move, swap and restyle everything.
+          </p>
+          <div class="cta">
+            <a class="btn primary" href="https://badova.dk/planner/" data-i="open"
+              >Open the live demo</a
+            >
+          </div>
+        </div>
+        <a class="shot" href="https://badova.dk/planner/"
+          ><img
+            src="docs/shots/3d.jpg"
+            width="1440"
+            height="900"
+            alt="Bad 3D: 3D view of a bathroom with toilet, vanity and shower"
+        /></a>
+      </section>
+
+      <div class="author">
+        <div class="badge" aria-hidden="true">AL</div>
+        <div>
+          <h2 data-i="a_h">Designed, coded and shipped by Andrii Lynnyk</h2>
+          <p data-i="a_p1">
+            This is my development: product research, UX, every 3D model, the
+            tile engine, the AI pipeline and the server endpoints — idea to
+            production in October 2026. The only third-party library in the
+            browser is three.js (MIT).
+          </p>
+          <p data-i="a_p2">
+            The planner runs in production for a Danish bathroom renovation company at badova.dk/planner/, licensed as a service: the client site is a thin shell that loads the planner from my servers with an integration key. The source code is private.
+          </p>
+          <p>
+            <a href="https://andrii.dk/" rel="author">andrii.dk</a> ·
+            <a href="https://github.com/andrey-tut">github.com/andrey-tut</a>
+          </p>
+        </div>
+      </div>
+
+      <section>
+        <div class="facts">
+          <div class="fact">
+            <b>4 600+</b><span data-i="f1">lines of own JavaScript</span>
+          </div>
+          <div class="fact">
+            <b>16</b
+            ><span data-i="f2">parametric fixture types, many variants</span>
+          </div>
+          <div class="fact">
+            <b>60+</b
+            ><span data-i="f3">tiles, floors and paints, true to size</span>
+          </div>
+          <div class="fact">
+            <b>1</b
+            ><span data-i="f4">library: three.js — no CDN, works offline</span>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sec" data-i="what">What it does</h2>
+        <div class="grid">
+          <div class="card">
+            <h3 data-i="c1h">Photos → renovated 3D room</h3>
+            <p data-i="c1p">
+              Guided capture or upload. AI finds walls, doors, windows and
+              plumbing points; scale comes from standard-size objects (doors,
+              toilets, tiles), median over several.
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-i="c2h">Own parametric 3D models</h3>
+            <p data-i="c2p">
+              Wall-hung toilet with concealed cistern, vanities 60–120 cm,
+              mirrors with LED glow, showers with glass and thermostat,
+              bathtubs, towel rails, washer — all generated in code.
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-i="c3h">Real tiles, real sizes</h3>
+            <p data-i="c3p">
+              Procedural tiles in centimetres with grout and relief, herringbone
+              and offset patterns, tiling height: full wall, 120 cm or shower
+              zone only.
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-i="c4h">Smart placement</h3>
+            <p data-i="c4p">
+              Snap to walls and corners, strict collision rules, door swing and
+              service clearances, drag from the catalogue with a green/red
+              ghost.
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-i="c5h">3D, 2D and eye level</h3>
+            <p data-i="c5p">
+              Doll-house 3D with cut-away walls, a measured 2D plan and a
+              first-person view. Undo/redo, autosave and a share link with the
+              whole design.
+            </p>
+          </div>
+          <div class="card">
+            <h3 data-i="c6h">AI photo of the design</h3>
+            <p data-i="c6p">
+              One click turns the current 3D view into a photorealistic mood
+              image with a before/after slider. Works on phones as an
+              installable PWA.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sec" data-i="shots">Screenshots</h2>
+        <div class="gallery">
+          <figure>
+            <img
+              src="docs/shots/indefra.jpg"
+              loading="lazy"
+              width="1440"
+              height="900"
+              alt="Eye-level view"
+            />
+            <figcaption data-i="s1">Eye-level view</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="docs/shots/katalog.jpg"
+              loading="lazy"
+              width="1440"
+              height="900"
+              alt="Catalogue with 3D thumbnails"
+            />
+            <figcaption data-i="s2">
+              Catalogue with real 3D thumbnails
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="docs/shots/2d.jpg"
+              loading="lazy"
+              width="1440"
+              height="900"
+              alt="2D plan"
+            />
+            <figcaption data-i="s3">2D plan with measurements</figcaption>
+          </figure>
+          <figure>
+            <img
+              src="docs/shots/fliser.jpg"
+              loading="lazy"
+              width="1440"
+              height="900"
+              alt="Tiles and colours"
+            />
+            <figcaption data-i="s4">Tiles, floors and paint</figcaption>
+          </figure>
+        </div>
+        <div class="mobile-pair" style="margin-bottom: 48px">
+          <figure style="margin: 0">
+            <img
+              src="docs/shots/mobil.jpg"
+              loading="lazy"
+              width="780"
+              height="1688"
+              alt="Mobile"
+              style="
+                width: 100%;
+                height: auto;
+                border-radius: 14px;
+                border: 1px solid var(--line);
+              "
+            />
+            <figcaption
+              data-i="s5"
+              style="font-size: 13px; color: var(--mute); padding-top: 6px"
+            >
+              Phone: bottom sheet, touch placement
+            </figcaption>
+          </figure>
+          <figure style="margin: 0">
+            <img
+              src="docs/shots/foto-intro.jpg"
+              loading="lazy"
+              width="1440"
+              height="900"
+              alt="Start from photos"
+              style="
+                width: 100%;
+                height: auto;
+                border-radius: 14px;
+                border: 1px solid var(--line);
+              "
+            />
+            <figcaption
+              data-i="s6"
+              style="font-size: 13px; color: var(--mute); padding-top: 6px"
+            >
+              Start from photos — step by step
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <footer>
+        <span data-i="copy"
+          >© 2026 Andrii Lynnyk. Design, code and demo — my own work. All rights
+          reserved.</span
+        >
+        <a href="https://andrii.dk/">andrii.dk</a>
+        <a href="https://github.com/andrey-tut">GitHub</a>
+        <a href="https://badova.dk/planner/">badova.dk/planner</a>
+      </footer>
+    </div>
+    <script>
+      const T = {
+        da: {
+          kicker: "Demo · mit eget produkt",
+          h1: "Planlæg et nyt badeværelse i 3D — ud fra et par fotos",
+          lead: "Tag fotos af det gamle badeværelse; AI aflæser planløsning, proportioner og hvor vand og afløb sidder, og planlæggeren bygger det renoverede rum i 3D. Bagefter kan du flytte, bytte og ændre alt.",
+          open: "Åbn demoen",
+          code: "Kildekode",
+          client: "Live hos en kunde",
+          a_h: "Designet, kodet og sat i drift af Andrii Lynnyk",
+          a_p1: "Det er min udvikling: research, UX, alle 3D-modeller, flise-motoren, AI-flowet og server-endpoints — fra idé til produktion i oktober 2026. Det eneste tredjepartsbibliotek i browseren er three.js (MIT).",
+          a_p2: "Planlæggeren kører i produktion hos et dansk badeværelsesfirma på badova.dk/planner/ som en licenseret tjeneste: kundens side er en tynd skal, der henter planlæggeren fra mine servere med en integrationsnøgle. Kildekoden er privat.",
+          f1: "linjer egen JavaScript",
+          f2: "parametriske typer inventar, mange varianter",
+          f3: "fliser, gulve og farver i rigtige mål",
+          f4: "bibliotek: three.js — uden CDN, virker offline",
+          what: "Hvad den kan",
+          c1h: "Fotos → renoveret 3D-rum",
+          c1p: "Guidet fotografering eller upload. AI finder vægge, døre, vinduer og vand/afløb; målestokken regnes ud fra ting med standardmål (døre, toiletter, fliser), median af flere.",
+          c2h: "Egne parametriske 3D-modeller",
+          c2p: "Væghængt toilet med indbygningscisterne, vaskeskabe 60–120 cm, spejle med LED-lys, brusere med glas og termostat, badekar, håndklædetørrere, vaskemaskine — alt genereret i kode.",
+          c3h: "Rigtige fliser i rigtige mål",
+          c3p: "Procedurelle fliser i centimeter med fuge og relief, sildeben og forbandt, flisehøjde: hele væggen, 120 cm eller kun bruseområdet.",
+          c4h: "Smart placering",
+          c4p: "Fastgørelse til vægge og hjørner, strenge kollisionsregler, dørens svingområde og friarealer, træk fra kataloget med grøn/rød skygge.",
+          c5h: "3D, 2D og øjenhøjde",
+          c5p: "Dukkehus-3D med skårne vægge, målsat 2D-plan og visning indefra. Fortryd/gentag, autogem og et delelink med hele designet.",
+          c6h: "AI-foto af designet",
+          c6p: "Ét klik gør den aktuelle 3D-visning til et fotorealistisk stemningsbillede med før/efter-skyder. Virker på telefonen som installerbar PWA.",
+          shots: "Skærmbilleder",
+          s1: "Visning indefra",
+          s2: "Katalog med ægte 3D-miniaturer",
+          s3: "2D-plan med mål",
+          s4: "Fliser, gulve og maling",
+          s5: "Telefon: panel nedefra, placering med fingeren",
+          s6: "Start ud fra fotos — trin for trin",
+          copy: "© 2026 Andrii Lynnyk. Design, kode og demo — mit eget arbejde. Alle rettigheder forbeholdes.",
+        },
+        uk: {
+          kicker: "Демо · мій власний продукт",
+          h1: "Сплануй нову ванну в 3D — з кількох фото на телефон",
+          lead: "Сфотографуй стару ванну; AI розпізнає планування, пропорції, де вода й злив, і планувальник будує вже оновлену кімнату в 3D. Далі все можна рухати, міняти й перефарбовувати.",
+          open: "Відкрити демо",
+          code: "Код",
+          client: "Живе в клієнта",
+          a_h: "Задумав, закодив і запустив Андрій Линник",
+          a_p1: "Це моя розробка: дослідження, UX, кожна 3D-модель, рушій плитки, AI-конвеєр і серверні ендпоінти — від ідеї до продакшену в жовтні 2026. Єдина стороння бібліотека в браузері — three.js (MIT).",
+          a_p2: "Планер працює в продакшені в данської фірми з ремонту ванних на badova.dk/planner/ як ліцензований сервіс: сайт клієнта — тонка оболонка, яка завантажує планер з моїх серверів за ключем інтеграції. Сирцевий код приватний.",
+          f1: "рядків власного JavaScript",
+          f2: "параметричних типів сантехніки, багато варіантів",
+          f3: "плиток, підлог і фарб у реальних розмірах",
+          f4: "бібліотека: three.js — без CDN, працює офлайн",
+          what: "Що вміє",
+          c1h: "Фото → оновлена 3D-ванна",
+          c1p: "Зйомка з підказками або завантаження. AI знаходить стіни, двері, вікна й точки води/зливу; масштаб рахується від предметів стандартного розміру (двері, унітаз, плитка), медіаною з кількох.",
+          c2h: "Власні параметричні 3D-моделі",
+          c2p: "Підвісний унітаз з інсталяцією, тумби 60–120 см, дзеркала з LED-підсвіткою, душ зі склом і термостатом, ванни, рушникосушки, пральна — усе згенероване кодом.",
+          c3h: "Справжня плитка в реальних розмірах",
+          c3p: "Процедурна плитка в сантиметрах із затиркою й рельєфом, ялинка й зсув, висота плитки: уся стіна, 120 см або лише душова зона.",
+          c4h: "Розумна розстановка",
+          c4p: "Прилипання до стін і кутів, суворі правила колізій, зона відкривання дверей і вільні зони, перетягування з каталогу із зеленим/червоним привидом.",
+          c5h: "3D, 2D і з висоти очей",
+          c5p: "3D «ляльковий будиночок» зі зрізаними стінами, 2D-план із розмірами й вигляд зсередини. Скасувати/повторити, автозбереження, посилання з усім дизайном.",
+          c6h: "AI-фото дизайну",
+          c6p: "Один клік — і поточний 3D-вигляд стає фотореалістичним зображенням із повзунком «до/після». На телефоні працює як PWA, яку можна встановити.",
+          shots: "Скріншоти",
+          s1: "Вигляд з висоти очей",
+          s2: "Каталог зі справжніми 3D-мініатюрами",
+          s3: "2D-план із розмірами",
+          s4: "Плитка, підлога, фарба",
+          s5: "Телефон: панель знизу, розміщення пальцем",
+          s6: "Старт із фото — крок за кроком",
+          copy: "© 2026 Андрій Линник. Дизайн, код і демо — моя власна робота. Усі права захищено.",
+        },
+      };
+      const EN = {};
+      document
+        .querySelectorAll("[data-i]")
+        .forEach((e) => (EN[e.dataset.i] = e.textContent));
+      T.en = EN;
+      function setLang(l) {
+        if (!T[l]) l = "en";
+        document.documentElement.lang = l;
+        document.querySelectorAll("[data-i]").forEach((e) => {
+          const v = T[l][e.dataset.i];
+          if (v) e.textContent = v;
+        });
+        document
+          .querySelectorAll(".langs button")
+          .forEach((b) => b.setAttribute("aria-pressed", b.dataset.l === l));
+        try {
+          localStorage.setItem("bad3d_lang", l);
+        } catch (_) {}
+      }
+      document
+        .querySelectorAll(".langs button")
+        .forEach((b) => (b.onclick = () => setLang(b.dataset.l)));
+      let l0 = new URLSearchParams(location.search).get("lang");
+      try {
+        l0 = l0 || localStorage.getItem("bad3d_lang");
+      } catch (_) {}
+      l0 =
+        l0 ||
+        ((navigator.language || "en").slice(0, 2) === "da"
+          ? "da"
+          : (navigator.language || "").slice(0, 2) === "uk"
+            ? "uk"
+            : "en");
+      setLang(l0);
+    </script>
+  </body>
+</html>
